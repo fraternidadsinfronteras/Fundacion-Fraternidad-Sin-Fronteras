@@ -1,234 +1,171 @@
-// Mensaje de bienvenida
-window.addEventListener("load", () => {
-    console.log("Bienvenido a la Fundación Fraternidad Sin Fronteras");
-});
+document.addEventListener("DOMContentLoaded", function () {
+    const slides = document.querySelectorAll(".hero-slider .slide");
+    const indicadores = document.querySelector(".slider-indicadores");
 
-// Desplazamiento suave del menú
-document.querySelectorAll('a[href^="#"]').forEach(enlace => {
-    enlace.addEventListener("click", function(e) {
-        e.preventDefault();
+    if (slides.length === 0) return;
 
-        const destino = document.querySelector(this.getAttribute("href"));
+    let indiceActual = 0;
+    let temporizador;
 
-        if (destino) {
-            destino.scrollIntoView({
-                behavior: "smooth"
+    // Crear un punto por cada fotografía
+    if (indicadores) {
+        indicadores.innerHTML = "";
+
+        slides.forEach(function (_, indice) {
+            const boton = document.createElement("button");
+            boton.type = "button";
+            boton.setAttribute("aria-label", "Ver fotografía " + (indice + 1));
+
+            boton.addEventListener("click", function () {
+                mostrarSlide(indice);
+                iniciarCarrusel();
+            });
+
+            indicadores.appendChild(boton);
+        });
+    }
+
+    function mostrarSlide(indice) {
+        slides[indiceActual].classList.remove("active");
+        indiceActual = indice;
+        slides[indiceActual].classList.add("active");
+
+        if (indicadores) {
+            const botones = indicadores.querySelectorAll("button");
+
+            botones.forEach(function (boton, i) {
+                boton.classList.toggle("active", i === indiceActual);
             });
         }
-    });
-});
-
-// Botón para volver arriba
-const botonArriba = document.createElement("button");
-botonArriba.innerHTML = "⬆";
-botonArriba.id = "btnArriba";
-document.body.appendChild(botonArriba);
-
-botonArriba.style.position = "fixed";
-botonArriba.style.bottom = "20px";
-botonArriba.style.right = "20px";
-botonArriba.style.padding = "12px 15px";
-botonArriba.style.borderRadius = "50%";
-botonArriba.style.border = "none";
-botonArriba.style.background = "#0c4a6e";
-botonArriba.style.color = "white";
-botonArriba.style.cursor = "pointer";
-botonArriba.style.display = "none";
-
-window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-        botonArriba.style.display = "block";
-    } else {
-        botonArriba.style.display = "none";
-    }
-});
-
-botonArriba.addEventListener("click", () => {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-});
-// ================= CARRUSEL DE LA PORTADA =================
-
-const hero = document.querySelector(".hero");
-
-const imagenes = [
-    "images/slider/1.jpeg",
-    "images/slider/2.jpeg",
-    "images/slider/3.jpeg",
-    "images/slider/4.jpeg",
-    "images/slider/5.jpeg",
-   
-];
-
-let indice = 0;
-
-setInterval(() => {
-
-    indice++;
-
-    if (indice >= imagenes.length) {
-        indice = 0;
     }
 
-    hero.style.background =
-        `linear-gradient(rgba(0,0,0,.60), rgba(0,0,0,.60)), url('${imagenes[indice]}')`;
+    function iniciarCarrusel() {
+        clearInterval(temporizador);
 
-    hero.style.backgroundSize = "cover";
-    hero.style.backgroundPosition = "center";
-    hero.style.backgroundRepeat = "no-repeat";
-
-}, 4000);
-// Cambiar apariencia del menú al hacer scroll
-
-const header = document.querySelector(".header");
-
-window.addEventListener("scroll", () => {
-
-    if(window.scrollY > 80){
-        header.classList.add("activo");
-    }else{
-        header.classList.remove("activo");
+        temporizador = setInterval(function () {
+            mostrarSlide((indiceActual + 1) % slides.length);
+        }, 5000);
     }
 
-});
-// Contadores animados
-
-const contadores = document.querySelectorAll(".contador");
-
-const iniciarContadores = () => {
-
-    contadores.forEach(contador => {
-
-        const objetivo = +contador.dataset.target;
-        let numero = 0;
-
-        const aumentar = () => {
-
-            const incremento = objetivo / 80;
-
-            if (numero < objetivo) {
-
-                numero += incremento;
-                contador.innerText = Math.ceil(numero);
-
-                requestAnimationFrame(aumentar);
-
-            } else {
-
-                contador.innerText = objetivo;
-
-                if (objetivo === 500) contador.innerText = "500+";
-                if (objetivo === 20) contador.innerText = "20+";
-                if (objetivo === 100) contador.innerText = "100%";
-            }
-
-        };
-
-        aumentar();
-
+    slides.forEach(function (slide, indice) {
+        slide.classList.toggle("active", indice === 0);
     });
 
+    iniciarCarrusel();
+});
+/* CARRUSEL AUTOMÁTICO DE NUESTRA HISTORIA */
+const fotosHistoria = document.querySelectorAll(".historia-galeria .historia-foto");
+
+if (fotosHistoria.length > 1) {
+    let indiceHistoria = 0;
+
+    setInterval(function () {
+        fotosHistoria[indiceHistoria].classList.remove("activa");
+        indiceHistoria = (indiceHistoria + 1) % fotosHistoria.length;
+        fotosHistoria[indiceHistoria].classList.add("activa");
+    }, 5000);
+}
+
+/* GALERÍAS DE NUESTROS PROGRAMAS */
+
+const carpetasProgramas = {
+    comedor: {
+        titulo: "Comedor Comunitario",
+        carpeta: "Comedor Comunitario",
+        cantidad: 25
+    },
+    jardin: {
+        titulo: "Creación Jardín Ancestral Casa Afro",
+        carpeta: "Creacion Jardin Ancestral Casa Afro",
+        cantidad: 15
+    },
+    deporte: {
+        titulo: "Deporte y Salud",
+        carpeta: "Deporte y Salud",
+        cantidad: 5
+    },
+    navidad: {
+        titulo: "Fiestas Navideñas con Niños",
+        carpeta: "Fiestas Navidenas con Ninos",
+        cantidad: 17
+    },
+    crochet: {
+        titulo: "Curso de Crochet",
+        carpeta: "Curso de Crochet",
+        cantidad: 1
+    },
+      chocolatada: {
+        titulo: "Chocolatada Solidaria",
+        carpeta: "Chocolatada Solidaria",
+        cantidad: 1
+    },
+    cine: {
+        titulo: "Cine Casa Afro",
+        carpeta: "Cine Casa Afro",
+        cantidad: 1
+    }
 };
 
-const seccionImpacto = document.querySelector("#impacto");
+function abrirPrograma(programa) {
+    const datos = carpetasProgramas[programa];
 
-const observador = new IntersectionObserver((entradas) => {
+    if (!datos) return;
 
-    if (entradas[0].isIntersecting) {
+    document.getElementById("titulo-galeria-programa").textContent =
+        datos.titulo;
 
-        iniciarContadores();
-        observador.disconnect();
+    const galeria = document.getElementById("galeria-programa");
+    const contenedor = document.getElementById("fotos-programa");
 
-    }
+    contenedor.innerHTML = "";
 
-});
+    const extensiones = [".jpeg", ".jpg", ".png", ".webp"];
+    let numero = 1;
 
-observador.observe(seccionImpacto);
-// ================= ANIMACIONES AL HACER SCROLL =================
+    galeria.hidden = false;
 
-const elementos = document.querySelectorAll("section");
+    function probarFoto() {
+        if (numero > 100) return;
 
-elementos.forEach((elemento)=>{
-    elemento.classList.add("oculto");
-});
+        const imagen = document.createElement("img");
+        let extensionActual = 0;
 
-const mostrarElemento = new IntersectionObserver((entradas)=>{
+        function probarExtension() {
+            if (extensionActual >= extensiones.length) {
+                numero++;
+                probarFoto();
+                return;
+            }
 
-    entradas.forEach((entrada)=>{
+            imagen.src =
+                "imagenes/" + datos.carpeta + "/" +
+                numero + extensiones[extensionActual];
 
-        if(entrada.isIntersecting){
-            entrada.target.classList.add("mostrar");
+            extensionActual++;
         }
 
-    });
+        imagen.onload = function () {
+            contenedor.appendChild(imagen);
+            numero++;
+            probarFoto();
+        };
 
-},{
-    threshold:0.15
-});
+        imagen.onerror = function () {
+            probarExtension();
+        };
 
-elementos.forEach((elemento)=>{
-    mostrarElemento.observe(elemento);
-});
-// ================= GALERÍA LIGHTBOX =================
-
-const imagenesGaleria = document.querySelectorAll(".grid-galeria img");
-const lightbox = document.getElementById("lightbox");
-const imagenGrande = document.getElementById("imagen-grande");
-const cerrar = document.querySelector(".cerrar");
-
-imagenesGaleria.forEach(img=>{
-
-    img.addEventListener("click",()=>{
-
-        lightbox.style.display="flex";
-        imagenGrande.src=img.src;
-
-    });
-
-});
-
-cerrar.addEventListener("click",()=>{
-
-    lightbox.style.display="none";
-
-});
-
-lightbox.addEventListener("click",(e)=>{
-
-    if(e.target===lightbox){
-        lightbox.style.display="none";
+        probarExtension();
     }
 
-});
-// ================= PRELOADER =================
+    probarFoto();
+    galeria.scrollIntoView({ behavior: "smooth" });
+}
 
-window.addEventListener("load",()=>{
+function cerrarPrograma() {
+    document.getElementById("galeria-programa").hidden = true;
 
-    const preloader=document.getElementById("preloader");
-
-    setTimeout(()=>{
-
-        preloader.style.opacity="0";
-
-        setTimeout(()=>{
-
-            preloader.style.display="none";
-
-        },800);
-
-    },1200);
-
-});
-// ================= MENÚ RESPONSIVE =================
-
-const menu = document.querySelector(".menu-toggle");
-const nav = document.querySelector("nav");
-
-menu.addEventListener("click",()=>{
-
-    nav.classList.toggle("activo");
-
-});
-
+    document.getElementById("programas").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+window.abrirPrograma = abrirPrograma;
