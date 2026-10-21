@@ -55,6 +55,9 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 /* CARRUSEL AUTOMÁTICO DE NUESTRA HISTORIA */
 const fotosHistoria = document.querySelectorAll(".historia-galeria .historia-foto");
+console.log("Fotos de historia:", fotosHistoria.length);
+console.log("Cantidad detectada:", document.querySelectorAll(".historia-foto").length);
+console.log("Carrusel de historia iniciado");
 
 if (fotosHistoria.length > 1) {
     let indiceHistoria = 0;
@@ -82,27 +85,32 @@ const carpetasProgramas = {
     deporte: {
         titulo: "Deporte y Salud",
         carpeta: "Deporte y Salud",
-        cantidad: 5
+        cantidad: 11
     },
     navidad: {
         titulo: "Fiestas Navideñas con Niños",
         carpeta: "Fiestas Navidenas con Ninos",
-        cantidad: 17
+        cantidad: 23
     },
     crochet: {
         titulo: "Curso de Crochet",
         carpeta: "Curso de Crochet",
-        cantidad: 1
+        cantidad: 8
     },
-      chocolatada: {
-        titulo: "Chocolatada Solidaria",
-        carpeta: "Chocolatada Solidaria",
-        cantidad: 1
-    },
+       chocolatada: {
+         titulo: "Labor Social y Comunitaria",
+    carpeta: "Labor Social y Comunitaria",
+    cantidad: 16
+},
     cine: {
         titulo: "Cine Casa Afro",
         carpeta: "Cine Casa Afro",
         cantidad: 1
+    },
+    cultura: {
+        titulo: "Cultura",
+        carpeta: "Cultura",
+        cantidad: 6
     }
 };
 
@@ -118,14 +126,18 @@ function abrirPrograma(programa) {
     const contenedor = document.getElementById("fotos-programa");
 
     contenedor.innerHTML = "";
+    galeria.hidden = false;
 
     const extensiones = [".jpeg", ".jpg", ".png", ".webp"];
     let numero = 1;
 
-    galeria.hidden = false;
-
     function probarFoto() {
-        if (numero > 100) return;
+        if (numero > 100) {
+    if (programa === "cultura" || programa === "chocolatada") {
+        mostrarVideos();
+    }
+    return;
+}
 
         const imagen = document.createElement("img");
         let extensionActual = 0;
@@ -156,6 +168,30 @@ function abrirPrograma(programa) {
 
         probarExtension();
     }
+
+   function mostrarVideos() {
+    if (programa === "chocolatada") {
+        for (let i = 17; i <= 18; i++) {
+            const video = document.createElement("video");
+            video.controls = true;
+            video.preload = "metadata";
+            video.style.width = "100%";
+            video.src = "imagenes/Labor Social y Comunitaria/" + i + ".mp4";
+            contenedor.appendChild(video);
+        }
+    }
+
+    if (programa === "cultura") {
+        for (let i = 7; i <= 11; i++) {
+            const video = document.createElement("video");
+            video.controls = true;
+            video.preload = "metadata";
+            video.style.width = "100%";
+            video.src = "imagenes/Cultura/" + i + ".mp4";
+            contenedor.appendChild(video);
+        }
+    }
+}
 
     probarFoto();
     galeria.scrollIntoView({ behavior: "smooth" });
